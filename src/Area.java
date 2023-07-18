@@ -9,13 +9,39 @@ public class Area {
     public Area(int difficulty) {
         this.difficulty = difficulty;
 
-        number_bombs = difficulty * 5 + 5;
+        number_bombs = difficulty * 10 + 10;
         bombs_left = number_bombs;
 
+        for(int i = 0; i < number_bombs;) { //Generate bombs in random cells
+            int x = (int) (Math.random() * 10);
+            int y = (int) (Math.random() * 10);
+
+            if(cells[y][x] != 9) {  //Generate new bomb
+                cells[y][x] = 9;
+                i++;
+            }
+        }
+
+        for(int i = 0; i < 10; i++) {   //Count bombs near every cell
+            for(int j = 0; j < 10; j++) {
+                if(cells[i][j] != 9) cells[i][j] = countBombs(j, i);
+            }
+        }
     }
 
-    public int countBombs() {
-        return 0;
+    public int countBombs(int x, int y) {
+        int count = 0;
+
+        if(x - 1 >= 0 && y - 1 >= 0 && cells[y-1][x-1] == 9) count++;
+        if(y - 1 >= 0 && cells[y-1][x] == 9) count++;
+        if(x + 1 < 10 && y - 1 >= 0 && cells[y-1][x+1] == 9) count++;
+        if(x + 1 < 10 && cells[y][x+1] == 9) count++;
+        if(x + 1 < 10 && y + 1 < 10 && cells[y+1][x+1] == 9) count++;
+        if(y + 1 < 10 && cells[y+1][x] == 9) count++;
+        if(x - 1 >= 0 && y + 1 < 10 && cells[y+1][x-1] == 9) count++;
+        if(x - 1 >= 0 && cells[y][x-1] == 9) count++;
+
+        return count;
     }
 
     public void openCell() {
