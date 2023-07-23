@@ -1,10 +1,13 @@
+import java.lang.reflect.Array;
+import java.util.Arrays;
+
 public class Area {
     private int[][] cells = new int[10][10];    //Game field
 
     //0 - clear, 1-8 - number of bombs near, 9 - bomb
     private int number_bombs = 10;  //Number of bombs. Depends on game difficulty
     private int bombs_left = 10;    //Number of remaining bombs
-    private int difficulty = 1; //1 - Easy (10 bombs), 2 - medium (15 bombs), 3 - hard (20 bombs)
+    private int difficulty = 1; //1 - Easy (20 bombs), 2 - medium (30 bombs), 3 - hard (40 bombs)
 
     public Area(int difficulty) {
         this.difficulty = difficulty;
@@ -27,6 +30,10 @@ public class Area {
                 if(cells[i][j] != 9) cells[i][j] = countBombs(j, i);
             }
         }
+
+        for(int[] arr: cells) {
+            System.out.println(Arrays.toString(arr));
+        }
     }
 
     public int countBombs(int x, int y) {
@@ -44,8 +51,8 @@ public class Area {
         return count;
     }
 
-    public void openCell() {
-
+    public int openCell(int x, int y) {
+        return cells[y][x];
     }
 
     public void markCell() {
@@ -67,6 +74,7 @@ public class Area {
     public void gameRestart() {
 
     }
+
 
 
 }

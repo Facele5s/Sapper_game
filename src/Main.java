@@ -6,6 +6,8 @@ import java.io.File;
 import java.io.IOException;
 
 public class Main extends JFrame implements ActionListener {
+    Area area;
+
     JPanel p_info;
     JPanel p_game;
 
@@ -22,6 +24,9 @@ public class Main extends JFrame implements ActionListener {
         setResizable(false);
         setLayout(new BorderLayout());
         setDefaultCloseOperation(EXIT_ON_CLOSE);
+
+        area = new Area(1);
+        area.gameStart();
 
         try {
             seven_segment = Font.createFont(Font.TRUETYPE_FONT, new File("Seven Segment.ttf"));
@@ -46,11 +51,10 @@ public class Main extends JFrame implements ActionListener {
         add(p_game, BorderLayout.PAGE_END);
 
         for(int i = 0; i < 100; i++) {
-            Button_square b = new Button_square();
+            Button_square b = new Button_square(i);
             b.setBorderPainted(false);
             b.setIcon(new ImageIcon("img/btn.png"));
             b.setPressedIcon(new ImageIcon("img/btn_pressed.png"));
-            b.setDisabledIcon(new ImageIcon("img/blank.png"));
             b.addActionListener(this);
             p_game.add(b);
         }
@@ -67,7 +71,7 @@ public class Main extends JFrame implements ActionListener {
         smile.setPreferredSize(new Dimension(50, 50));
         p_info.add(smile);
 
-        l_marks = new JLabel("100");
+        l_marks = new JLabel("20");
         l_marks.setForeground(Color.RED);
         l_marks.setBackground(Color.BLACK);
         l_marks.setFont(seven_segment.deriveFont(62f));
@@ -79,15 +83,26 @@ public class Main extends JFrame implements ActionListener {
     }
 
     public static void main(String[] args) throws InterruptedException {
-        new Main();
-
-        Area area = new Area(1);
-        area.gameStart();
+        Main window = new Main();
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
         Button_square b = (Button_square) e.getSource();
         b.setEnabled(false);
+
+        int x = b.getId() % 10;
+        int y = b.getId() / 10;
+        int val = area.openCell(x, y);
+
+        if(val == 9) {
+            b.setDisabledIcon(new ImageIcon("img/expl.png"));
+            smile.setIcon(new ImageIcon("img/face_dead.png"));
+        } else if(val == 0) {
+            b.setDisabledIcon(new ImageIcon("img/blank.png"));
+        } else {
+            String path = String.format("img/btn_%d.png", val);
+            b.setDisabledIcon(new ImageIcon(path));
+        }
     }
 }
