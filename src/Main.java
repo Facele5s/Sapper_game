@@ -3,7 +3,8 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
-import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 public class Main extends JFrame implements ActionListener {
     Area area;
@@ -18,6 +19,10 @@ public class Main extends JFrame implements ActionListener {
 
     Font seven_segment;
 
+    Map<Integer, Button_square> btns = new HashMap<>();
+
+    int game_status = 0; //0 - waiting, 1 - started, 2 - finished, 3 - lost
+
     public Main() {
         super("Sapper");
         setSize(500, 600);
@@ -25,17 +30,11 @@ public class Main extends JFrame implements ActionListener {
         setLayout(new BorderLayout());
         setDefaultCloseOperation(EXIT_ON_CLOSE);
 
-        area = new Area(1);
-        area.gameStart();
-
         try {
             seven_segment = Font.createFont(Font.TRUETYPE_FONT, new File("Seven Segment.ttf"));
         }
-        catch (IOException e) {
-            System.out.println(e);
-        }
-        catch (FontFormatException e) {
-            System.out.println(e);
+        catch (Exception e) {
+            e.printStackTrace();
         }
 
         p_info = new JPanel();
@@ -52,11 +51,9 @@ public class Main extends JFrame implements ActionListener {
 
         for(int i = 0; i < 100; i++) {
             Button_square b = new Button_square(i);
-            b.setBorderPainted(false);
-            b.setIcon(new ImageIcon("img/btn.png"));
-            b.setPressedIcon(new ImageIcon("img/btn_pressed.png"));
             b.addActionListener(this);
             p_game.add(b);
+            btns.put(i, b);
         }
 
         l_time = new JLabel("00:00");
@@ -68,7 +65,9 @@ public class Main extends JFrame implements ActionListener {
 
         smile = new JButton();
         smile.setIcon(new ImageIcon("img/face_smile.png"));
+        smile.setPressedIcon(new ImageIcon("img/face_o.png"));
         smile.setPreferredSize(new Dimension(50, 50));
+        smile.addActionListener(this);
         p_info.add(smile);
 
         l_marks = new JLabel("20");
@@ -82,27 +81,38 @@ public class Main extends JFrame implements ActionListener {
         setVisible(true);
     }
 
-    public static void main(String[] args) throws InterruptedException {
+    public static void main(String[] args) {
         Main window = new Main();
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        Button_square b = (Button_square) e.getSource();
-        b.setEnabled(false);
+        if(e.getSource() == smile) { //Start game
+            System.out.println("EEE");
 
+            return;
+        }
+
+        Button_square b = (Button_square) e.getSource();
         int x = b.getId() % 10;
         int y = b.getId() / 10;
-        int val = area.openCell(x, y);
+
+        if(game_status == 0) {
+            game_status = 1;
+
+            area = new Area(x, y, 3);
+        }
+
+        int val = area.getCellVal(x, y);
+
+        b.show(val);
 
         if(val == 9) {
-            b.setDisabledIcon(new ImageIcon("img/expl.png"));
             smile.setIcon(new ImageIcon("img/face_dead.png"));
         } else if(val == 0) {
-            b.setDisabledIcon(new ImageIcon("img/blank.png"));
+            area.openSpace(x, y, btns);
         } else {
-            String path = String.format("img/btn_%d.png", val);
-            b.setDisabledIcon(new ImageIcon(path));
+            area.getOpened_cells().add(10 * x + y);
         }
     }
 }

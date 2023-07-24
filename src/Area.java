@@ -1,16 +1,21 @@
-import java.lang.reflect.Array;
 import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 public class Area {
     private int[][] cells = new int[10][10];    //Game field
+    private Set<Integer> opened_cells = new HashSet<>();
 
     //0 - clear, 1-8 - number of bombs near, 9 - bomb
     private int number_bombs = 10;  //Number of bombs. Depends on game difficulty
     private int bombs_left = 10;    //Number of remaining bombs
     private int difficulty = 1; //1 - Easy (20 bombs), 2 - medium (30 bombs), 3 - hard (40 bombs)
 
-    public Area(int difficulty) {
+    public Area(int x_start, int y_start, int difficulty) {
         this.difficulty = difficulty;
+
+        cells[y_start][x_start] = 0;
 
         number_bombs = difficulty * 10 + 10;
         bombs_left = number_bombs;
@@ -19,7 +24,7 @@ public class Area {
             int x = (int) (Math.random() * 10);
             int y = (int) (Math.random() * 10);
 
-            if(cells[y][x] != 9) {  //Generate new bomb
+            if(cells[y][x] != 9 && Math.abs(x - x_start) + Math.abs(y - y_start) > 2) {  //Generate new bomb. Not near the start cell
                 cells[y][x] = 9;
                 i++;
             }
@@ -51,17 +56,35 @@ public class Area {
         return count;
     }
 
-    public int openCell(int x, int y) {
+    public int getCellVal(int x, int y) {
         return cells[y][x];
+    }
+
+    public void openSpace(int x, int y, Map<Integer, Button_square> btns) {
+
+        if(cells[y][x] == 0 && !opened_cells.contains(10 * y + x)) {
+            opened_cells.add(10 * y + x);
+            btns.get(y * 10 + x).show(cells[y][x]);
+
+            if(x-1 >= 0) openSpace(x-1, y, btns);
+            if(x+1 < 10) openSpace(x+1, y, btns);
+            if(y-1 >= 0) openSpace(x, y-1, btns);
+            if(y+1 < 10) openSpace(x, y+1, btns);
+
+            if(x-1 >= 0 && y-1 >= 0) openSpace(x-1, y-1, btns);
+            if(x-1 >= 0 && y+1 < 10) openSpace(x-1, y+1, btns);
+            if(x+1 < 10 && y-1 >= 0) openSpace(x+1, y-1, btns);
+            if(x+1 < 10 && y+1 < 10) openSpace(x+1, y+1, btns);
+        } else {
+            btns.get(y * 10 + x).show(cells[y][x]);
+            opened_cells.add(10 * y + x);
+        }
     }
 
     public void markCell() {
 
     }
 
-    public void gameStart() {
-
-    }
 
     public void gameStop() {
 
@@ -75,6 +98,7 @@ public class Area {
 
     }
 
-
-
+    public Set<Integer> getOpened_cells() {
+        return opened_cells;
+    }
 }
