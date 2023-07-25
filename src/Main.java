@@ -2,11 +2,13 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
-public class Main extends JFrame implements ActionListener {
+public class Main extends JFrame implements ActionListener, MouseListener {
     Area area;
 
     JPanel p_info;
@@ -54,6 +56,7 @@ public class Main extends JFrame implements ActionListener {
             b.addActionListener(this);
             p_game.add(b);
             btns.put(i, b);
+            b.addMouseListener(this);
         }
 
         l_time = new JLabel("00:00");
@@ -114,5 +117,33 @@ public class Main extends JFrame implements ActionListener {
         } else {
             area.getOpened_cells().add(10 * x + y);
         }
+    }
+
+    @Override
+    public void mouseClicked(MouseEvent e) {
+        Button_square btn = (Button_square) e.getSource();
+        if(btn.isEnabled()) {
+            btn.swapMark();
+        }
+    }
+
+    @Override
+    public void mousePressed(MouseEvent e) {
+
+    }
+
+    @Override
+    public void mouseReleased(MouseEvent e) {
+
+    }
+
+    @Override
+    public void mouseEntered(MouseEvent e) {
+
+    }
+
+    @Override
+    public void mouseExited(MouseEvent e) {
+
     }
 }

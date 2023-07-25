@@ -19,6 +19,8 @@ public class Button_square extends JButton {
     private final static ImageIcon ico_bomb_def;
     private final static ImageIcon ico_mark;
 
+    private boolean marked = false;
+
     static {
         ico_btn = new ImageIcon("img/btn.png");
         ico_btn_pressed = new ImageIcon("img/btn_pressed.png");
@@ -96,5 +98,16 @@ public class Button_square extends JButton {
         }
 
         setEnabled(false);
+    }
+
+    public boolean isMarked() {
+        return marked;
+    }
+
+    public void swapMark() {
+        marked = !marked;
+        if(marked) {
+            setIcon(ico_mark);
+        } else setIcon(ico_btn);
     }
 }
