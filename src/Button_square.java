@@ -2,7 +2,7 @@ import javax.swing.*;
 import java.awt.*;
 
 public class Button_square extends JButton {
-
+    //Icons
     private final static ImageIcon ico_btn;
     private final static ImageIcon ico_btn_pressed;
     private final static ImageIcon ico_blank;
@@ -21,7 +21,7 @@ public class Button_square extends JButton {
 
     private boolean marked = false;
 
-    static {
+    static {    //Initialize icons
         ico_btn = new ImageIcon("img/btn.png");
         ico_btn_pressed = new ImageIcon("img/btn_pressed.png");
         ico_blank = new ImageIcon("img/blank.png");
@@ -53,7 +53,7 @@ public class Button_square extends JButton {
         return id;
     }
 
-    public void show(int val) {
+    public void show(int val) { //Open cell and set the icon according to value
         switch (val) {
             case -1, 0 -> {
                 setDisabledIcon(ico_blank);
@@ -110,7 +110,7 @@ public class Button_square extends JButton {
 
     public void swapMark() {
         marked = !marked;
-        if(marked) {
+        if (marked) {
             setIcon(ico_mark);
         } else setIcon(ico_btn);
     }
