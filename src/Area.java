@@ -1,4 +1,3 @@
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -10,14 +9,12 @@ public class Area {
     //0 - clear, 1-8 - number of bombs near, 9 - bomb
     private int number_bombs;  //Number of bombs. Depends on game difficulty
     private int marks_left;    //Number of remaining bombs
-    private int difficulty; //1 - Easy (20 bombs), 2 - medium (30 bombs), 3 - hard (40 bombs)
 
-    public Area(int x_start, int y_start, int difficulty) {
-        this.difficulty = difficulty;
+    public Area(int x_start, int y_start) {
 
         cells[y_start][x_start] = 0;
 
-        number_bombs = difficulty * 10 + 10;
+        number_bombs = 30;
         marks_left = number_bombs;
 
         for(int i = 0; i < number_bombs;) { //Generate bombs in random cells
@@ -75,23 +72,6 @@ public class Area {
             btns.get(y * 10 + x).show(cells[y][x]);
             opened_cells.add(10 * y + x);
         }
-    }
-
-    public void markCell() {
-
-    }
-
-
-    public void gameStop() {
-
-    }
-
-    public void gameFinish() {
-
-    }
-
-    public void gameRestart() {
-
     }
 
     public Set<Integer> getOpened_cells() {

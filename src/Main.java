@@ -109,7 +109,7 @@ public class Main extends JFrame implements ActionListener, MouseListener {
         if(game_status == 0) {
             game_status = 1;
 
-            area = new Area(x, y, 1);
+            area = new Area(x, y);
             l_marks.setText(Integer.toString(area.marksLeft()));
         }
 
@@ -205,6 +205,7 @@ public class Main extends JFrame implements ActionListener, MouseListener {
 
         for(Button_square btn: btns.values()) {
             btn.setEnabled(true);
+            if(btn.isMarked()) btn.swapMark();
         }
 
         game_status = 0;
