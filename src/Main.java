@@ -8,7 +8,7 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
-public class Main extends JFrame implements ActionListener, MouseListener {
+public class Main extends JFrame implements ActionListener, MouseListener, Runnable {
     Area area;
 
     JPanel p_info;
@@ -28,6 +28,8 @@ public class Main extends JFrame implements ActionListener, MouseListener {
     ImageIcon ico_face_smile = new ImageIcon("img/face_smile.png");
 
     int game_status = 0; //0 - waiting, 1 - started, 2 - finished
+
+    Timer timer;
 
     public Main() {
         super("Sapper");
@@ -88,14 +90,20 @@ public class Main extends JFrame implements ActionListener, MouseListener {
         setVisible(true);
     }
 
+    @Override
+    public void run() {
+
+    }
+
     public static void main(String[] args) {
-        Main window = new Main();
+        Thread game = new Thread(new Main(), "Game");
+        game.start();
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
         if(e.getSource() == smile) { //Reset game
-            game_reset();
+            if(game_status > 0) game_reset();
             return;
         }
 
@@ -108,6 +116,8 @@ public class Main extends JFrame implements ActionListener, MouseListener {
 
         if(game_status == 0) {
             game_status = 1;
+            timer = new Timer(this);
+            timer.start();
 
             area = new Area(x, y);
             l_marks.setText(Integer.toString(area.marksLeft()));
@@ -170,18 +180,20 @@ public class Main extends JFrame implements ActionListener, MouseListener {
     }
 
     public void game_win() {
-        l_time.setText("YOU WIN!");
+        timer.interrupt();
 
         for(Button_square btn: btns.values()) {
             if(btn.isMarked()) btn.setDefused();
         }
 
         smile.setIcon(ico_face_o);
+        l_time.setText("YOU WIN!");
         game_status = 2;
     }
 
     public void game_lose() {
         smile.setIcon(ico_face_dead);
+        timer.interrupt();
 
         for(Button_square btn: btns.values()) {
             if(btn.isEnabled()) {
@@ -202,6 +214,7 @@ public class Main extends JFrame implements ActionListener, MouseListener {
 
     public void game_reset() {
         smile.setIcon(ico_face_smile);
+        timer.interrupt();
 
         for(Button_square btn: btns.values()) {
             btn.setEnabled(true);
@@ -209,6 +222,12 @@ public class Main extends JFrame implements ActionListener, MouseListener {
         }
 
         game_status = 0;
+        l_time.setText("00:00");
+        l_marks.setText("--");
+    }
+
+    public void updateTime(String time) {
+        l_time.setText(time);
     }
 
 }
