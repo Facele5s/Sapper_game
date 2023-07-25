@@ -8,9 +8,9 @@ public class Area {
     private Set<Integer> opened_cells = new HashSet<>();
 
     //0 - clear, 1-8 - number of bombs near, 9 - bomb
-    private int number_bombs = 10;  //Number of bombs. Depends on game difficulty
-    private int bombs_left = 10;    //Number of remaining bombs
-    private int difficulty = 1; //1 - Easy (20 bombs), 2 - medium (30 bombs), 3 - hard (40 bombs)
+    private int number_bombs;  //Number of bombs. Depends on game difficulty
+    private int marks_left;    //Number of remaining bombs
+    private int difficulty; //1 - Easy (20 bombs), 2 - medium (30 bombs), 3 - hard (40 bombs)
 
     public Area(int x_start, int y_start, int difficulty) {
         this.difficulty = difficulty;
@@ -18,7 +18,7 @@ public class Area {
         cells[y_start][x_start] = 0;
 
         number_bombs = difficulty * 10 + 10;
-        bombs_left = number_bombs;
+        marks_left = number_bombs;
 
         for(int i = 0; i < number_bombs;) { //Generate bombs in random cells
             int x = (int) (Math.random() * 10);
@@ -100,5 +100,13 @@ public class Area {
 
     public Set<Integer> getOpened_cells() {
         return opened_cells;
+    }
+
+    public int marksLeft() {
+        return marks_left;
+    }
+
+    public void mark(int n) {
+        marks_left+= n;
     }
 }

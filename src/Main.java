@@ -73,7 +73,7 @@ public class Main extends JFrame implements ActionListener, MouseListener {
         smile.addActionListener(this);
         p_info.add(smile);
 
-        l_marks = new JLabel("20");
+        l_marks = new JLabel("--");
         l_marks.setForeground(Color.RED);
         l_marks.setBackground(Color.BLACK);
         l_marks.setFont(seven_segment.deriveFont(62f));
@@ -97,13 +97,17 @@ public class Main extends JFrame implements ActionListener, MouseListener {
         }
 
         Button_square b = (Button_square) e.getSource();
+
+        if(b.isMarked()) return;
+
         int x = b.getId() % 10;
         int y = b.getId() / 10;
 
         if(game_status == 0) {
             game_status = 1;
 
-            area = new Area(x, y, 3);
+            area = new Area(x, y, 1);
+            l_marks.setText(Integer.toString(area.marksLeft()));
         }
 
         int val = area.getCellVal(x, y);
@@ -118,23 +122,25 @@ public class Main extends JFrame implements ActionListener, MouseListener {
             area.getOpened_cells().add(10 * x + y);
         }
     }
-
-    @Override
-    public void mouseClicked(MouseEvent e) {
-        Button_square btn = (Button_square) e.getSource();
-        if(btn.isEnabled()) {
-            btn.swapMark();
-        }
-    }
-
-    @Override
-    public void mousePressed(MouseEvent e) {
-
-    }
-
+    
     @Override
     public void mouseReleased(MouseEvent e) {
+        if(game_status == 0) return;
+        Button_square btn = (Button_square) e.getSource();
+        if(btn.isEnabled()) {
+            if(!btn.isMarked() && area.marksLeft() == 0) return;
 
+            btn.swapMark();
+
+            if(btn.isMarked()) {
+                area.getOpened_cells().add(btn.getId());
+                area.mark(-1);
+            } else {
+                area.getOpened_cells().remove(btn.getId());
+                area.mark(1);
+            }
+            l_marks.setText(Integer.toString(area.marksLeft()));
+        }
     }
 
     @Override
@@ -144,6 +150,16 @@ public class Main extends JFrame implements ActionListener, MouseListener {
 
     @Override
     public void mouseExited(MouseEvent e) {
+
+    }
+
+    @Override
+    public void mouseClicked(MouseEvent e) {
+
+    }
+
+    @Override
+    public void mousePressed(MouseEvent e) {
 
     }
 }
