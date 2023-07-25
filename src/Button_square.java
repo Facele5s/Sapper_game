@@ -95,6 +95,10 @@ public class Button_square extends JButton {
                 setDisabledIcon(ico_expl);
                 setEnabled(false);
             }
+            case 10 -> {
+                setDisabledIcon(ico_bomb);
+                setEnabled(false);
+            }
         }
 
         setEnabled(false);
@@ -109,5 +113,10 @@ public class Button_square extends JButton {
         if(marked) {
             setIcon(ico_mark);
         } else setIcon(ico_btn);
+    }
+
+    public void setDefused() {
+        setDisabledIcon(ico_bomb_def);
+        setEnabled(false);
     }
 }

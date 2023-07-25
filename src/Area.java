@@ -35,10 +35,6 @@ public class Area {
                 if(cells[i][j] != 9) cells[i][j] = countBombs(j, i);
             }
         }
-
-        for(int[] arr: cells) {
-            System.out.println(Arrays.toString(arr));
-        }
     }
 
     public int countBombs(int x, int y) {

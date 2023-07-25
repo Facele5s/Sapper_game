@@ -23,7 +23,11 @@ public class Main extends JFrame implements ActionListener, MouseListener {
 
     Map<Integer, Button_square> btns = new HashMap<>();
 
-    int game_status = 0; //0 - waiting, 1 - started, 2 - finished, 3 - lost
+    ImageIcon ico_face_dead = new ImageIcon("img/face_dead.png");
+    ImageIcon ico_face_o = new ImageIcon("img/face_o.png");
+    ImageIcon ico_face_smile = new ImageIcon("img/face_smile.png");
+
+    int game_status = 0; //0 - waiting, 1 - started, 2 - finished
 
     public Main() {
         super("Sapper");
@@ -67,8 +71,8 @@ public class Main extends JFrame implements ActionListener, MouseListener {
         p_info.add(l_time);
 
         smile = new JButton();
-        smile.setIcon(new ImageIcon("img/face_smile.png"));
-        smile.setPressedIcon(new ImageIcon("img/face_o.png"));
+        smile.setIcon(ico_face_smile);
+        smile.setPressedIcon(ico_face_o);
         smile.setPreferredSize(new Dimension(50, 50));
         smile.addActionListener(this);
         p_info.add(smile);
@@ -90,9 +94,8 @@ public class Main extends JFrame implements ActionListener, MouseListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        if(e.getSource() == smile) { //Start game
-            System.out.println("EEE");
-
+        if(e.getSource() == smile) { //Reset game
+            game_reset();
             return;
         }
 
@@ -111,21 +114,22 @@ public class Main extends JFrame implements ActionListener, MouseListener {
         }
 
         int val = area.getCellVal(x, y);
-
         b.show(val);
 
         if(val == 9) {
-            smile.setIcon(new ImageIcon("img/face_dead.png"));
+            game_lose();
         } else if(val == 0) {
             area.openSpace(x, y, btns);
         } else {
-            area.getOpened_cells().add(10 * x + y);
+            area.getOpened_cells().add(10 * y + x);
         }
+
+        if(area.getOpened_cells().size() == 100) game_win();
     }
     
     @Override
     public void mouseReleased(MouseEvent e) {
-        if(game_status == 0) return;
+        if(game_status == 0 || game_status == 2) return;
         Button_square btn = (Button_square) e.getSource();
         if(btn.isEnabled()) {
             if(!btn.isMarked() && area.marksLeft() == 0) return;
@@ -140,6 +144,8 @@ public class Main extends JFrame implements ActionListener, MouseListener {
                 area.mark(1);
             }
             l_marks.setText(Integer.toString(area.marksLeft()));
+
+            if(area.getOpened_cells().size() == 100) game_win();
         }
     }
 
@@ -162,4 +168,46 @@ public class Main extends JFrame implements ActionListener, MouseListener {
     public void mousePressed(MouseEvent e) {
 
     }
+
+    public void game_win() {
+        l_time.setText("YOU WIN!");
+
+        for(Button_square btn: btns.values()) {
+            if(btn.isMarked()) btn.setDefused();
+        }
+
+        smile.setIcon(ico_face_o);
+        game_status = 2;
+    }
+
+    public void game_lose() {
+        smile.setIcon(ico_face_dead);
+
+        for(Button_square btn: btns.values()) {
+            if(btn.isEnabled()) {
+                if(btn.isMarked()) {
+                    btn.setDefused();
+                } else {
+                    int x = btn.getId() % 10;
+                    int y = btn.getId() / 10;
+                    int val = area.getCellVal(x, y);
+                    if(val == 9) val++;
+                    btn.show(val);
+                }
+            }
+
+        }
+        game_status = 2;
+    }
+
+    public void game_reset() {
+        smile.setIcon(ico_face_smile);
+
+        for(Button_square btn: btns.values()) {
+            btn.setEnabled(true);
+        }
+
+        game_status = 0;
+    }
+
 }
