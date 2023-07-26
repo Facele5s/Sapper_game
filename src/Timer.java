@@ -21,7 +21,7 @@ public class Timer extends Thread {
             if (min != 99) {    //Count minutes up to 99, then stop //Count seconds up to 60
                 if (sec == 59) {
                     min++;
-                    sec = 0;
+                    sec = -1;
                 }
             }
             if (sec != 99) sec++;   //Count seconds up to 99, then stop

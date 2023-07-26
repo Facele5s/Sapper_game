@@ -38,6 +38,7 @@ public class Main extends JFrame implements ActionListener, MouseListener, Runna
         setResizable(false);
         setLayout(new BorderLayout());
         setDefaultCloseOperation(EXIT_ON_CLOSE);
+        setIconImage(new ImageIcon("img/icon.png").getImage());
 
         try {   //Read seven segment font from file
             seven_segment = Font.createFont(Font.TRUETYPE_FONT, new File("Seven Segment.ttf"));
